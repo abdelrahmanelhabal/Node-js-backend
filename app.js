@@ -4,9 +4,15 @@ const port = 3000
 const mongoose = require('mongoose');
 app.use(express.urlencoded({ extended: true }));
 const Data = require("./models/schema");
+app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
-  res.sendFile('./view/index.html',{root: __dirname}); // send the html file 
+  Data.find().then((result)=>{ // result => array of object 
+    res.render("index" , {title:"Home page",arr:result}); 
+  }).catch((err)=>{
+    console.log(err)
+  });
+  
 })
 
 app.get('/file.html', (req, res) => {
@@ -21,6 +27,7 @@ mongoose // connect the project with DataBase
 })
 .catch((err) => {console.log(err)}); /*if the project cannot connect with the database then catch errors*/ 
 
+// send data to database 
 app.post('/', (req, res) => {
 console.log(req.body); // print the request body in console    
 const data = new Data(req.body); // create object 
@@ -28,6 +35,5 @@ data.save().then(() => { // save the object in DataBase
   res.redirect('/file.html');  
 }).catch((err)=>{
 console.log(err);
-}); 
-  
+});  
 })
