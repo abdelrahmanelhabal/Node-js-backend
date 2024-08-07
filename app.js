@@ -5,19 +5,42 @@ const mongoose = require('mongoose');
 app.use(express.urlencoded({ extended: true }));
 const Data = require("./models/schema");
 app.set('view engine', 'ejs');
+app.use(express.static('public')); // to link the static file 
+// static file in the public folder
+
+// Auto refresh
+const path = require("path");
+const livereload = require("livereload");
+const liveReloadServer = livereload.createServer();
+liveReloadServer.watch(path.join(__dirname, 'public'));
+ 
+ 
+const connectLivereload = require("connect-livereload");
+app.use(connectLivereload());
+ 
+liveReloadServer.server.once("connection", () => {
+  setTimeout(() => {
+    liveReloadServer.refresh("/");
+  }, 100);
+});
+
 
 app.get('/', (req, res) => {
-  Data.find().then((result)=>{ // result => array of object 
-    res.render("index" , {title:"Home page",arr:result}); 
-  }).catch((err)=>{
-    console.log(err)
-  });
-  
+  res.render("index"); 
+});
+
+app.get('/user/add.html', (req, res) => {
+  res.render("user/add");
 })
 
-app.get('/file.html', (req, res) => {
-  res.send("<h1> Data was sent successfully </h1>") 
+app.get('/user/view.html', (req, res) => {
+  res.render("user/view");
 })
+
+app.get('/user/edit.html', (req, res) => {
+  res.render("user/edit");
+})
+
 mongoose // connect the project with DataBase 
 .connect("mongodb+srv://Elhabal:a1a2a3a4a5@cluster0.wnmcdi9.mongodb.net/all-data?retryWrites=true&w=majority&appName=Cluster0")
 .then(() => {
@@ -27,13 +50,3 @@ mongoose // connect the project with DataBase
 })
 .catch((err) => {console.log(err)}); /*if the project cannot connect with the database then catch errors*/ 
 
-// send data to database 
-app.post('/', (req, res) => {
-console.log(req.body); // print the request body in console    
-const data = new Data(req.body); // create object 
-data.save().then(() => { // save the object in DataBase
-  res.redirect('/file.html');  
-}).catch((err)=>{
-console.log(err);
-});  
-})
