@@ -16,8 +16,12 @@ liveReloadServer.watch(path.join(__dirname, 'public'));
  
  
 // GET REQUEST
-app.get('/', (req, res) => {
-  res.render("index"); 
+app.get('/', (req, res) => { 
+  userData.find().then((result)=>{
+    res.render("index",{arr:result});
+  }).catch((err)=>{
+  console.log(err);
+  })
 });
 
 app.get('/user/add.html', (req, res) => {
@@ -36,7 +40,7 @@ app.get('/user/edit.html', (req, res) => {
 app.post('/user/add.html', (req, res) => {
 const userdata = new userData(req.body);
 userdata.save().then(()=>{
-  res.redirect('/user/add.html');
+  res.redirect('/');
 }).catch((err)=>{
 console.log(err);
 });
