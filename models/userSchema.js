@@ -10,7 +10,9 @@ const userSchema = new Schema({
     Age: String,
     Country: String,
     Gender: String
-});
+}
+,{timestamps:true}
+);
 
 // Create a model based on that schema
 const userData = mongoose.model("userData", userSchema);
