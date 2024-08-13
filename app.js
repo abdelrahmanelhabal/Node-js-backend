@@ -50,8 +50,7 @@ app.get('/view/:id', (req, res) => {
 
 // POST REQUEST
 app.post('/user/add.html', (req, res) => {
-const userdata = new userData(req.body);
-userdata.save().then(()=>{
+  userData.create(req.body).then(()=>{
   res.redirect('/');
 }).catch((err)=>{
 console.log(err);
@@ -68,6 +67,15 @@ app.delete("/edit/:id", (req, res) => {
       console.log(err);
     });
 });
+
+app.put("/edit/:id", (req, res) => {
+  userData.updateOne({_id: req.params.id}, req.body)
+    .then(() => {
+      res.redirect("/");
+  }).catch((err)=>{
+   console.log(err);
+  });
+}); 
 
 mongoose // connect the project with DataBase 
 .connect("mongodb+srv://Elhabal:a1a2a3a4a5@cluster0.wnmcdi9.mongodb.net/all-data?retryWrites=true&w=majority&appName=Cluster0")
