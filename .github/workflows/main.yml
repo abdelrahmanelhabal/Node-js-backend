@@ -12,3 +12,9 @@ jobs:
     steps:
       - name: print a welcome message
         run: echo "Wellcome"     
+
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.s
+
+      - name: list repository
+        run: ls -la
